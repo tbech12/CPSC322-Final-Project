@@ -31,6 +31,10 @@ def get_data():
                         movie_result.append(list(data.values()))
                 except:
                     print("Could not find", movie)
+            elif r.status_code == 401:
+                r_data = r.json()
+                if r_data["Error"] == 'Request limit reached!':
+                    break;
         with open('input_data/omdb_data.csv', 'w') as file:
             write = csv.writer(file)
             write.writerow(FIELDS)
