@@ -98,6 +98,8 @@ class MyPyTable:
                 except ValueError:
                     #print(self.data[row], " could not be converted to a numeric type")
                     pass #does error but continue on processing
+                except IndexError:
+                    pass
         return self
 
     def drop_rows(self, row_indexes_to_drop):
