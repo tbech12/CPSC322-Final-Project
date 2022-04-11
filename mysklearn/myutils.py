@@ -7,6 +7,7 @@ Description: utils for classifers and pa4 and pa5 and pa6 notebook
 """
 import random
 import math
+import ast
 import numpy as np
 from tabulate import tabulate
 
@@ -167,6 +168,30 @@ def get_vals(table, column_index, is_two_dim):
         final_vals = [[val] for val in vals] #put in a 2d list
         return final_vals
     return vals
+
+def convert_to_list(table, col):
+        """Try to convert each value in the table to a list type (list).
+
+        Notes:
+            Leave values as is that cannot be converted to list.
+        """
+        for row in range(len(table.data)): #loop through all rows
+            column = table.column_names.index(col)
+            if not(isinstance(table.data[row][column], list)):
+                try:
+                    list_value = ast.literal_eval(table.data[row][column]) #try to convert the type
+                    table.data[row][column] = list_value #saves to data
+                except ValueError:
+                    try:
+                        list_value = table.data[row][column].strip().split(', ') #try to convert the type
+                        table.data[row][column] = list_value
+                    except ValueError:
+                        pass
+                    #print(table.data[row], " could not be converted to a numeric type")
+                    pass #does error but continue on processing
+                except IndexError:
+                    pass
+        return table
 
 def get_mpg_rating(mpg_list):
     '''

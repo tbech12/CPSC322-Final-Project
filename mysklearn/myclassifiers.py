@@ -131,10 +131,14 @@ class MyKNeighborsClassifier:
         for i, instance in enumerate(distances_copy):
             instance.append(self.y_train[i]) #gets y_train values
             instance.append(i) #gets index
-            if isinstance(X_test[0], str):
-                dist = (myutils.compute_euclidean_distance2(instance[:len(X_test[0])], X_test[0]))
-            else:
-                dist = (myutils.compute_euclidean_distance(instance[:len(X_test[0])], X_test[0]))
+            try:
+                if isinstance(X_test[0], str):
+                    dist = (myutils.compute_euclidean_distance2(instance[:len(X_test[0])], X_test[0]))
+                else:
+                    dist = (myutils.compute_euclidean_distance(instance[:len(X_test[0])], X_test[0]))
+            except:
+                dist = 0.0
+
             instance.append(dist) #adds dist
         for instance in distances_copy:
             new_distances.append(instance) #collects all insatnces
@@ -171,6 +175,8 @@ class MyKNeighborsClassifier:
             vals = [int(value) for value in vals] #convert to ints
         except TypeError:
             print("Can not convert to Ints")
+        except ValueError:
+            pass
         for index in vals:
             try:
                 if self.y_train[index] in neighbors:
@@ -182,6 +188,11 @@ class MyKNeighborsClassifier:
                     neighbors[index] += 1 #add 1 to neighbors
                 else:
                     neighbors[index] = 1 #set to one
+            except TypeError:
+                if index in self.y_train and index in neighbors:
+                    neighbors[index] += 1 #add 1 to neighbors
+                else:
+                    neighbors[index] = 1
         sorted_neighbors = sorted(neighbors.items(), key=myutils.itemgetter(1), reverse=True) #sort list
         y_predicted.append(sorted_neighbors[0][0]) #add the predicted
         return y_predicted #return predicted

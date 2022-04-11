@@ -5,7 +5,7 @@ import json
 from mysklearn.mypytable import MyPyTable
 
 OMDB_API_URL = "http://www.omdbapi.com/?apikey=60a1d5e4&"
-FIELDS = ['title', 'year', 'rated', 'released', 'runtime',
+FIELDS = ['title', 'year', 'rated', 'release_date', 'runtime',
           'genre', 'director', 'writer', 'actors', 'plot',
           'language', 'country', 'awards', 'poster',
           'ratings', 'metascore', 'imdbrating', 'imdbvotes',
