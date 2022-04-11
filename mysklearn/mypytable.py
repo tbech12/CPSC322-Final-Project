@@ -387,15 +387,21 @@ class MyPyTable:
             found = False
             for title in key_column_names:
                 index = self.column_names.index(title) #get index
-                val = row[index]#get val
-                self_keys.append(val) #add to self key
+                try:
+                    val = row[index]#get val
+                    self_keys.append(val) #add to self key
+                except IndexError:
+                    print(index, row)
             match_index = 0
             for other_row in other_table.data: #for other side
                 other_keys = []
                 for title in key_column_names:
                     index = other_table.column_names.index(title) #get index
-                    val = other_row[index]#get the vaule
-                    other_keys.append(val) #add to other keys
+                    try:
+                        val = other_row[index]#get the vaule
+                        other_keys.append(val) #add to other keys
+                    except IndexError:
+                        print(index, other_row)
                 if self_keys == other_keys: #if they are the same
                     index_array.append(match_index) #add to index array
                     found = True

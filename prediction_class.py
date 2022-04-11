@@ -1,3 +1,4 @@
+from os import pread
 import mysklearn.myutils as myutils
 import mysklearn.myevaluation as myevaluation
 from mysklearn.myclassifiers import MyKNeighborsClassifier, MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier
@@ -8,7 +9,8 @@ def set_up(movie_table: MyPyTable):
     dummy = MyDummyClassifier()
     naive = MyNaiveBayesClassifier()
     tree = MyDecisionTreeClassifier()
-    columns_used = ["title", "genres", "ratings", "metascore", "imdbrating", "boxoffice", "runtime", "year", "release_date"]
+    #columns_used = ["title", "genres", "ratings", "metascore", "imdbrating", "boxoffice", "runtime", "year", "release_date"]
+    columns_used = ["genres", "runtime","release_date"]
     for x in columns_used:
         print(movie_table.column_names.index(x), end=" ")
     print()
@@ -27,13 +29,11 @@ def set_up(movie_table: MyPyTable):
     y_train = movie
     for val in range(len(movie_table.data)):
         tmp = []
-        tmp.append(titles[val])
-        tmp.append(genres[val])
-        tmp.append(metascore[val])
-        tmp.append(imdbrating[val])
-        tmp.append(boxoffices[val])
+        try:
+            tmp.append(genres[val][0])
+        except IndexError:
+            tmp.append("NA")
         tmp.append(runtimes[val])
-        tmp.append(years[val])
         tmp.append(release_dates[val])
         x_train.append(tmp)
 
@@ -44,34 +44,36 @@ def set_up(movie_table: MyPyTable):
     strat_tree = []
     strat_true = []
 
-    print(len(tmp))
-
-    for train, test in zip(strat_train_folds, strat_test_folds):
-        X_train = [[str(movie_table.data[i][0]), movie_table.data[i][5], movie_table.data[i][16],
+    for train, test in zip(strat_train_folds[:25], strat_test_folds[:25]):
+        ''' X_train = [[str(movie_table.data[i][0]), movie_table.data[i][5], movie_table.data[i][16],
                     movie_table.data[i][21], movie_table.data[i][4], movie_table.data[i][1],
-                    movie_table.data[i][3]] for i in train]
-        X_test = [[str(movie_table.data[i][0]), movie_table.data[i][5], movie_table.data[i][16],
-                   movie_table.data[i][21], movie_table.data[i][4], movie_table.data[i][1],
-                   movie_table.data[i][3]] for i in test]
+                    movie_table.data[i][3]] for i in train] '''
+        X_train = [[str(movie_table.data[i][0]), movie_table.data[i][5], movie_table.data[i][4], movie_table.data[i][3]] for i in train]
+        X_test = [[str(movie_table.data[i][0]), movie_table.data[i][5], movie_table.data[i][4], movie_table.data[i][3]] for i in test]
         y_train = [movie[i] for i in train]
         y_test = [movie[i] for i in test]
         strat_true.extend(y_test)
         knn = MyKNeighborsClassifier()
         knn.fit(X_train, y_train)
-        for tests in X_test[:25]:
-            #print(tests)
-            print(knn.predict(tests))
-            for test in tests:
-                print(knn.predict(test)[0])
-                #strat_knn.append(knn.predict(test)[0])
-        '''nb = MyNaiveBayesClassifier()
+        for tests in X_test:
+            strat_knn.append(knn.predict(tests)[0])
+        nb = MyNaiveBayesClassifier()
         nb.fit(X_train, y_train)
-        strat_nb.extend(nb.predict(X_test))
+        nb_predicted = nb.predict(X_test)
+        strat_nb.extend(nb_predicted)
         dummy = MyDummyClassifier()
         dummy.fit(X_train, y_train)
-        strat_dummy.extend(dummy.predict(X_test))
+        dummy_predicted = dummy.predict(X_test)
+        strat_dummy.extend(dummy_predicted)
         tree = MyDecisionTreeClassifier()
-        tree.fit(X_train_2, y_train)
-        strat_tree.extend(tree.predict(X_test_2))'''
+        tree.fit(X_train, y_train)
+        strat_tree.extend(tree.predict(X_test))
+
+
+    knn_accuracy = myevaluation.accuracy_score(strat_true, strat_knn)
+    nb_accuracy = myevaluation.accuracy_score(strat_true, strat_nb)
+    dummy_accuracy = myevaluation.accuracy_score(strat_true, strat_dummy)
+    tree_accuracy = myevaluation.accuracy_score(strat_true, strat_tree)
+    myutils.print_accuracys(knn_accuracy, nb_accuracy, dummy_accuracy, tree_accuracy)
 
     return knn, dummy, naive, tree

@@ -40,7 +40,8 @@ def download_from_start():
             try:
                 r_data = json.dumps(r_data)
                 r_data = json.loads(r_data)
-                movie_result.append(list(r_data.values()))
+                if ['False', 'Movie not found!']!= list(r_data.values()):
+                    movie_result.append(list(r_data.values()))
             except:
                 print("Could not find", movie)
         elif r.status_code == 401:
@@ -75,7 +76,8 @@ def download_from_given_place():
             try:
                 r_data = json.dumps(r_data)
                 r_data = json.loads(r_data)
-                movie_result.append(list(r_data.values()))
+                if ['False', 'Movie not found!']!= list(r_data.values()):
+                    movie_result.append(list(r_data.values()))
             except:
                 print("Could not find", movie)
         elif r.status_code == 401:

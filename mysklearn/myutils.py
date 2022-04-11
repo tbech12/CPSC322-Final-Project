@@ -9,6 +9,7 @@ import random
 import math
 import ast
 import numpy as np
+from datetime import datetime
 from tabulate import tabulate
 
 def compute_euclidean_distance(v1, v2):
@@ -169,29 +170,121 @@ def get_vals(table, column_index, is_two_dim):
         return final_vals
     return vals
 
-def convert_to_list(table, col):
-        """Try to convert each value in the table to a list type (list).
+def convert_to_int(values):
+    """Try to convert each value in the table to a int type (int).
 
-        Notes:
-            Leave values as is that cannot be converted to list.
-        """
-        for row in range(len(table.data)): #loop through all rows
-            column = table.column_names.index(col)
-            if not(isinstance(table.data[row][column], list)):
+    Notes:
+        Leave values as is that cannot be converted to int.
+    """
+    result = []
+    for val in values:
+        if isinstance(val, str):
+            try:
+                result.append(int(''.join(i for i in val if i.isdigit())))
+            except:
+                result.append(max(set(result), key=result.count))
+        else:
+            result.append(val)
+    return result
+
+def convert_to_list_to_int(table, col):
+    """Try to convert each value in the table to a list type (list).
+
+    Notes:
+        Leave values as is that cannot be converted to list.
+    """
+    result = []
+    for row in range(len(table.data)): #loop through all rows
+        column = table.column_names.index(col)
+        if isinstance(table.data[row][column], str):
+            try:
+                int_val = (float(''.join(i for i in table.data[row][column] if i.isdigit())))
+                result.append(int_val)
+                table.data[row][column] = int_val
+            except:
+                table.data[row][column] = max(set(result), key=result.count)
+        else:
+            result.append(table.data[row][column])
+    return table
+
+def to_integer(dt_time):
+    """Helper function
+
+    Args:
+        dt_time (datetime): time
+
+    Returns:
+        int: datetime to int
+    """
+    return 10000*dt_time.year + 100*dt_time.month + dt_time.day
+
+def convert_to_list_to_date(table, col):
+    """Try to convert each value in the table to a list type (list).
+
+    Notes:
+        Leave values as is that cannot be converted to list.
+    """
+    result = []
+    for row in range(len(table.data)): #loop through all rows
+        column = table.column_names.index(col)
+        if isinstance(table.data[row][column], str) and len(table.data[row][column]) > 3:
+            try:
+                table.data[row][column] = to_integer(datetime.strptime(table.data[row][column],"%Y-%m-%d"))
+                result.append(table.data[row][column])
+            except:
+                table.data[row][column] = to_integer(datetime.strptime(table.data[row][column],"%d %b %Y"))
+                result.append(table.data[row][column])
+        else:
+            table.data[row][column] = max(set(result), key=result.count)
+    return table
+
+def convert_to_list(table, col):
+    """Try to convert each value in the table to a list type (list).
+
+    Notes:
+        Leave values as is that cannot be converted to list.
+    """
+    for row in range(len(table.data)): #loop through all rows
+        column = table.column_names.index(col)
+        if not(isinstance(table.data[row][column], list)):
+            try:
+                list_value = ast.literal_eval(table.data[row][column]) #try to convert the type
+                table.data[row][column] = list_value #saves to data
+            except ValueError:
                 try:
-                    list_value = ast.literal_eval(table.data[row][column]) #try to convert the type
-                    table.data[row][column] = list_value #saves to data
+                    list_value = table.data[row][column].strip().split(', ') #try to convert the type
+                    table.data[row][column] = list_value
                 except ValueError:
-                    try:
-                        list_value = table.data[row][column].strip().split(', ') #try to convert the type
-                        table.data[row][column] = list_value
-                    except ValueError:
-                        pass
-                    #print(table.data[row], " could not be converted to a numeric type")
-                    pass #does error but continue on processing
-                except IndexError:
                     pass
-        return table
+                #print(table.data[row], " could not be converted to a numeric type")
+                pass #does error but continue on processing
+            except IndexError:
+                pass
+    return table
+
+def convert_to_list_and_get_first(table, col):
+    """Try to convert each value in the table to a list type (list).
+
+    Notes:
+        Leave values as is that cannot be converted to list.
+    """
+    for row in range(len(table.data)): #loop through all rows
+        column = table.column_names.index(col)
+        if not(isinstance(table.data[row][column], list)):
+            try:
+                list_value = ast.literal_eval(table.data[row][column]) #try to convert the type
+                table.data[row][column] = list_value[0] #saves to data
+            except ValueError:
+                try:
+                    list_value = table.data[row][column].strip().split(', ') #try to convert the type
+                    table.data[row][column] = list_value[0]
+                except ValueError:
+                    pass
+                #print(table.data[row], " could not be converted to a numeric type")
+                pass #does error but continue on processing
+            except IndexError:
+                pass
+    return table
 
 def get_mpg_rating(mpg_list):
     '''
