@@ -11,6 +11,9 @@ mypytable library we are building
 import os
 import copy
 import csv
+
+from sqlalchemy import column
+
 from mysklearn import myutils
 from tabulate import tabulate # uncomment if you want to use the pretty_print() method
 # install tabulate with: pip install tabulate
@@ -212,6 +215,20 @@ class MyPyTable:
         self.data = []
         self.data = copy.deepcopy(newTable) #save valid rows to data
 
+    def drop_col(self, col_name):
+        """For columns drop the col
+
+        Args:
+            col_name(str): name of column to fill with the original average (of the column).
+        """
+        index = self.column_names.index(col_name)
+        self.column_names.remove(col_name)
+        for data in self.data:
+            try:
+                del (data[index])
+            except:
+                pass
+
     def replace_missing_values_with_column_average(self, col_name):
         """For columns with continuous data, fill missing values in a column
             by the column's original average.
@@ -229,8 +246,90 @@ class MyPyTable:
             for row in range(len(self.data)):
                 if self.data[row][column_index] == "NA": #if the row is na
                     self.data[row][column_index] = avg #repalce with avg
-        except ValueError:
+        except:
             pass
+
+    def most_common_from_col(self, col_name):
+        """gets most common based on col_name
+        """
+        column_elements = []
+        column_index = self.column_names.index(col_name) #get column index by given col
+        for value in self.data:
+            try:
+                if value[column_index] != "NA" or value[column_index] != 'N/A' or value[column_index] != "" or value[column_index] != []\
+                    or value[column_index] != 0.0 or value[column_index] == '0.0' or ("–" not in value[column_index] and col_name == 'year'): #if the value is not NA
+                    column_elements.append(value[column_index]) #add to column elements
+            except:
+                pass
+        column_elements = [val for val in column_elements if val != "NA" and val != 'N/A']
+        return max(set(column_elements), key=column_elements.count) #gets average
+
+    def replace_missing_values_with_column_most_common(self, col_name):
+        """For columns with continuous data, fill missing values in a column
+            by the column's original average.
+
+        Args:
+            col_name(str): name of column to fill with the original average (of the column).
+        """
+        column_elements = []
+        column_index = self.column_names.index(col_name) #get column index by given col
+        for value in self.data:
+            try:
+                if value[column_index] != "NA" and value[column_index] != 'N/A' and value[column_index] != "" and value[column_index] != []\
+                    and value[column_index] != 0.0 or value[column_index] == '0.0' and ("–" not in value[column_index] and col_name == 'year'): #if the value is not NA
+                    column_elements.append(value[column_index]) #add to column elements
+            except:
+                pass
+        try:
+            column_elements = [val for val in column_elements if val != "NA" or val != 'N/A']
+            common = max(set(column_elements), key=column_elements.count) #gets average
+            for row in range(len(self.data)):
+                if self.data[row][column_index] == "NA" or self.data[row][column_index] == 'N/A' or self.data[row][column_index] == "" or self.data[row][column_index] == []\
+                    or self.data[row][column_index] == 0.0 or self.data[row][column_index] == '0.0' or ("–" in self.data[row][column_index] and col_name == 'year'): #if the row is na
+                    self.data[row][column_index] = common #replace with common
+        except:
+            pass
+
+    def replace_na_with_most_common(self):
+        most_common = []
+        for column in self.column_names:
+            most_common.append(self.most_common_from_col(column))
+        for row in self.data: #loop through all rows
+            for i, column in enumerate(row):
+                if column == "NA":
+                    column = most_common[i]
+
+    def convert_row_to_same_type(self, col_name, type_to_change):
+        index = self.column_names.index(col_name)
+        most_common = self.most_common_from_col(col_name)
+        for data in self.data:
+            if type_to_change == str:
+                data[index] = str(data[index])
+                if "NA" in data[index]:
+                    data[index] = most_common
+            elif type_to_change == float:
+                if type(data[index]) == str:
+                    if "–" in data[index]:#this isnt a regular '-' is special idk lol
+                        float_val = data[index].split('–')[0]
+                        data[index] = float(float_val)
+                    elif "min" in data[index]:
+                        data[index] = float(data[index].split(" ")[0])
+                    elif "NA" in data[index] or len(data[index]) <= 1:
+                        try:
+                            data[index] = float(str(most_common).replace(',',''))
+                        except:
+                            data[index] = most_common
+                    elif "N/A" in data[index]:
+                        try:
+                            data[index] = float(str(most_common).replace(',',''))
+                        except:
+                            print(most_common)
+
+                            data[index] = most_common
+                    elif ',' in data[index]:
+                        data[index] = float(str(data[index]).replace(',',''))
+                else:
+                    data[index] = float(data[index])
 
     def compute_summary_statistics(self, col_names):
         """Calculates summary stats for this MyPyTable and stores the stats in a new MyPyTable.

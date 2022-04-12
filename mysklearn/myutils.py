@@ -170,6 +170,25 @@ def get_vals(table, column_index, is_two_dim):
         return final_vals
     return vals
 
+def replace_na(table, cols):
+    """
+        Try to convert each na value in the table to a int.
+    """
+    for col in cols:
+        result = []
+        for row in range(len(table.data)): #loop through all rows
+            column = table.column_names.index(col)
+            if isinstance(table.data[row][column], str):
+                try:
+                    float_val = float(''.join(i for i in table.data[row][column] if i.isdigit()))
+                    result.append(float_val)
+                    table.data[row][column] = float_val
+                except:
+                    table.data[row][column] = float(round(sum(result)/len(result), 1))
+            else:
+                result.append(table.data[row][column])
+    return table
+
 def convert_to_int(values):
     """Try to convert each value in the table to a int type (int).
 
