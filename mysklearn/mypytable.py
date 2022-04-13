@@ -122,7 +122,7 @@ class MyPyTable:
                 except IndexError:
                     pass
 
-    def load_from_file(self, filename):
+    def load_from_file(self, filename, convert = True):
         """Load column names and data from a CSV file.
 
         Args:
@@ -146,7 +146,8 @@ class MyPyTable:
                 self.column_names.append(row)
             for row in csvreader: #get the rest of the data as the table
                 self.data.append(row)
-            self.convert_to_numeric()
+            if convert:
+                self.convert_to_numeric()
             infile.close() #close file
         return self
 
@@ -196,6 +197,16 @@ class MyPyTable:
             else:
                 rows.append(dup_row) #else add to row
         return dups
+
+    def remove_duplicates(self, dups):
+        newTable = []
+        for i in range(len(self.data)): #loop throygh data
+            dup_row = []
+            if i not in dups: #if found dupe in dupe dows
+                newTable.append(self.data[i]) #add to dup
+        self.data = []
+        self.data = copy.deepcopy(newTable) #save valid rows to data
+
 
     def remove_rows_with_poor_size(self):
         newTable = []

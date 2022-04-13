@@ -13,10 +13,15 @@ def clean_movie_data():
     tmdb_table_movies.load_from_file("input_data/tmdb_5000_movies.csv")
     movie_table = MyPyTable()
     movie_table = omdb_table.perform_full_outer_join(tmdb_table_movies, ['title', 'genres', 'runtime', 'release_date', 'rated', 'imdbrating'])
-    columns_to_remove = set(['title', 'genres', 'runtime', 'release_date', 'rated', 'imdbrating']) ^ set(movie_table.column_names)
-    for col in columns_to_remove:
-        movie_table.drop_col(col)
+    #columns_to_remove = set(['title', 'genres', 'runtime', 'release_date', 'rated', 'imdbrating']) ^ set(movie_table.column_names)
+    #for col in columns_to_remove:
+    #    movie_table.drop_col(col)
     movie_table = myutils.convert_to_list_to_date(movie_table, "release_date")
+    movie_table = myutils.convert_to_list_to_int(movie_table, "runtime")
+    movie_table = myutils.convert_to_list_to_int(movie_table, "imdbrating")
+    dups = movie_table.find_duplicates(["title"])
+    movie_table.remove_duplicates(dups)
+
     movie_table.save_to_file("input_data/cleaned_movie_data.csv")
     return movie_table
 
@@ -26,8 +31,8 @@ def main():
     if not(file_exists):
         movie_table = clean_movie_data()
     else:
-        movie_table.load_from_file("input_data/cleaned_movie_data.csv")
-    knn, dummy, naive, tree = pc.set_up(movie_table)
+        movie_table.load_from_file("input_data/cleaned_movie_data.csv", False)
+    dummy, naive, tree, random_forest = pc.set_up(movie_table)
 
 
 if __name__ == "__main__":

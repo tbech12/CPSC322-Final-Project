@@ -651,6 +651,27 @@ def print_accuracys(knn_accuracy, nb_accuracy, dummy_accuracy, tree_accuracy = N
         print("Decision Tree: accuracy = ", round(tree_accuracy, 2),
           ", error rate = ", round(1-tree_accuracy, 2), sep='')
 
+def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None):
+    """print Accuracys
+
+    Args:
+        knn_accuracy (float): Accuracy to KNN
+        nb_accuracy (float): Accuracy to NB
+        dummy_accuracy (float): Accuracy to DUMMY
+    """
+    print()
+    print("=" * 80)
+    print("Step 2: Accuracy and error rate")
+    print("=" * 80)
+    print("Stratified 10-fold Cross Validation")
+    print("Naive Bayes: accuracy = ", round(nb_accuracy, 2),
+          ", error rate = ", round(1-nb_accuracy, 2), sep='')
+    print("Dummy: accuracy = ", round(dummy_accuracy, 2),
+          ", error rate = ", round(1-dummy_accuracy, 2), sep='')
+    if tree_accuracy is not None:
+        print("Decision Tree: accuracy = ", round(tree_accuracy, 2),
+          ", error rate = ", round(1-tree_accuracy, 2), sep='')
+
 def print_precision_recall_f1(knn, nb_class, dummy, tree=None):
     """print Precision recall and f1
 
@@ -1049,15 +1070,23 @@ def visual_tree(tree, dot_fname, pdf_fname, attribute_names):
 def find_low_mid_high(data, low:float, high:float):
     values = []
     for val in data:
-        if val != "N/A" or val != "N/A":
-            if val >= high:
-                values.append("High")
-            elif low > val < high:
-                values.append("Mid")
+        if "$" in val:
+            val = val.strip('$')
+            val = val.replace(",","")
+            val = float(val)
+        try:
+            if val != "N/A" or val != "N/A":
+                if val >= high:
+                    values.append("High")
+                elif low > val < high:
+                    values.append("Mid")
+                else:
+                    values.append("Low")
             else:
-                values.append("Low")
-        else:
+                values.append("Mid")
+        except:
             values.append("Mid")
+
     return values
 
 def find_low_mid_high_for_dates(data, low, high):
@@ -1089,56 +1118,11 @@ def get_genre_sum(genre_list):
      'N/A']
     converted_genre = []
     for genre_form_list in genre_list:
-        sum = 0
-        for genre in genre_form_list:
-            if genres[0] == genre:
-                sum += 21
-            elif genres[1] == genre:
-                sum += 20
-            elif genres[2] == genre:
-                sum += 19
-            elif genres[3] == genre:
-                sum += 18
-            elif genres[4] == genre:
-                sum += 17
-            elif genres[5] == genre:
-                sum += 16
-            elif genres[6] == genre:
-                sum += 15
-            elif genres[7] == genre:
-                sum += 14
-            elif genres[8] == genre:
-                sum += 13
-            elif genres[9] == genre:
-                sum += 12
-            elif genres[10] == genre:
-                sum += 11
-            elif genres[11] == genre:
-                sum += 10
-            elif genres[12] == genre:
-                sum += 9
-            elif genres[13] == genre:
-                sum += 8
-            elif genres[14] == genre:
-                sum += 7
-            elif genres[15] == genre:
-                sum += 6
-            elif genres[16] == genre:
-                sum += 5
-            elif genres[17] == genre:
-                sum += 4
-            elif genres[18] == genre:
-                sum += 3
-            elif genres[19] == genre:
-                sum += 2
-            elif genres[20] == genre:
-                sum += 1
-            elif genres[21] == genre:
-                sum += 0
+        sum = len(''.join(genre_form_list))
         converted_genre.append(sum)
     return converted_genre
 
-def get_genre_rating(rating_list):
+def get_rating_sum(rating_list):
     ratings = ['PG-13', 'R', 'G', 'N/A','Not Rated']
     converted_rating = []
     for rating in rating_list:
@@ -1155,3 +1139,12 @@ def get_genre_rating(rating_list):
             sum += 1
         converted_rating.append(sum)
     return converted_rating
+
+def convert_list_to_int(table, col_name):
+    index = table.column_names.index(col_name)
+    for data in table.data:
+        if "min" in data[index]:
+            data[index] = int(data[index].split(" ")[0])
+        elif 'N/A' in data[index]:
+            data[index] = 6.0
+

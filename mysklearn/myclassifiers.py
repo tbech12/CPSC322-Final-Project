@@ -131,14 +131,13 @@ class MyKNeighborsClassifier:
         for i, instance in enumerate(distances_copy):
             instance.append(self.y_train[i]) #gets y_train values
             instance.append(i) #gets index
-            try:
-                if isinstance(X_test[0], str):
-                    dist = (myutils.compute_euclidean_distance2(instance[:len(X_test[0])], X_test[0]))
-                else:
-                    dist = (myutils.compute_euclidean_distance(instance[:len(X_test[0])], X_test[0]))
-            except:
-                dist = 0.0
 
+            if isinstance(X_test[0], str):
+                dist = (myutils.compute_euclidean_distance2(instance[:len(X_test[0])], X_test[0]))
+            else:
+                print("\nASDSADASDASD")
+                print(X_test[0])
+                dist = (myutils.compute_euclidean_distance(instance[:len(X_test[0])], X_test[0]))
             instance.append(dist) #adds dist
         for instance in distances_copy:
             new_distances.append(instance) #collects all insatnces
