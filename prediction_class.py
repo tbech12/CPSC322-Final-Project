@@ -97,7 +97,7 @@ def set_up(movie_table: MyPyTable):
     tree_precision = []
     tree_recall = []
     tree_f1 = []
-    for title, true_title in zip(titles, strat_true):
+    for title in titles:
         nb_precision.append(myevaluation.binary_precision_score(strat_true, strat_nb, pos_label=title))
         nb_recall.append(myevaluation.binary_recall_score(strat_true, strat_nb, pos_label=title))
         nb_f1.append(myevaluation.binary_f1_score(strat_true, strat_nb, pos_label=title))
@@ -106,9 +106,9 @@ def set_up(movie_table: MyPyTable):
         dummy_recall.append(myevaluation.binary_recall_score(strat_true, strat_dummy, pos_label=title))
         dummy_f1.append(myevaluation.binary_f1_score(strat_true, strat_dummy, pos_label=title))
 
-        tree_precision.append(myevaluation.binary_precision_score(strat_true, strat_tree))
-        tree_recall.append(myevaluation.binary_recall_score(strat_true, strat_tree))
-        tree_f1.append(myevaluation.binary_f1_score(strat_true, strat_tree))
+        tree_precision.append(myevaluation.binary_precision_score(split_y_test, strat_tree, pos_label=title))
+        tree_recall.append(myevaluation.binary_recall_score(split_y_test, strat_tree, pos_label=title))
+        tree_f1.append(myevaluation.binary_f1_score(split_y_test, strat_tree, pos_label=title))
 
     nb_eval = [sum(nb_precision) / len(nb_precision), sum(nb_recall) / len(nb_recall), sum(nb_f1) / len(nb_f1)]
     dummy_eval = [sum(dummy_precision) / len(dummy_precision), sum(dummy_recall) / len(dummy_recall), sum(dummy_f1) / len(dummy_f1)]
