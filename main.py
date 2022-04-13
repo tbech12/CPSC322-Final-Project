@@ -12,42 +12,11 @@ def clean_movie_data():
     tmdb_table_movies = MyPyTable()
     tmdb_table_movies.load_from_file("input_data/tmdb_5000_movies.csv")
     movie_table = MyPyTable()
-    movie_table = omdb_table.perform_full_outer_join(tmdb_table_movies, ['title', 'genres', 'runtime', 'release_date'])
-    movie_table.drop_col("website")
-    movie_table.drop_col("dvd")
-    movie_table.drop_col("original_title")
-    movie_table.drop_col("id")
-    movie_table.drop_col("tagline")
-    for column in movie_table.column_names:
-        movie_table.replace_missing_values_with_column_most_common(column)
-
-    for column in movie_table.column_names:
-        try:
-            test_list = movie_table.get_column(column)
-            res = True
-            for ele in test_list:
-                if not isinstance(ele, type(test_list[0])):
-                    res = False
-                    break
-        except:
-            pass
-        if res == False:
-            if column == 'title':
-                movie_table.convert_row_to_same_type(column, type(test_list[0]))
-            elif column == 'year':
-                movie_table.convert_row_to_same_type(column, type(test_list[0]))
-            elif column == 'imdbvotes':
-                movie_table.convert_row_to_same_type(column, float)
-            elif column == 'imdbrating':
-                movie_table.convert_row_to_same_type(column, float)
-            elif column == 'metascore':
-                input("press to go")
-                movie_table.convert_row_to_same_type(column, float)
-                input("u done")
-            else:
-                movie_table.convert_row_to_same_type(column, type(ele))
-    movie_table.replace_na_with_most_common()
-    print(movie_table.column_names)
+    movie_table = omdb_table.perform_full_outer_join(tmdb_table_movies, ['title', 'genres', 'runtime', 'release_date', 'rated', 'imdbrating'])
+    columns_to_remove = set(['title', 'genres', 'runtime', 'release_date', 'rated', 'imdbrating']) ^ set(movie_table.column_names)
+    for col in columns_to_remove:
+        movie_table.drop_col(col)
+    movie_table = myutils.convert_to_list_to_date(movie_table, "release_date")
     movie_table.save_to_file("input_data/cleaned_movie_data.csv")
     return movie_table
 

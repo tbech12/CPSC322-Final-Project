@@ -11,6 +11,7 @@ mypytable library we are building
 import os
 import copy
 import csv
+import random
 
 from sqlalchemy import column
 
@@ -196,6 +197,14 @@ class MyPyTable:
                 rows.append(dup_row) #else add to row
         return dups
 
+    def remove_rows_with_poor_size(self):
+        newTable = []
+        for row in range(len(self.data)): #loop through data
+            if len(self.data[row]) == len(self.column_names): #loop through cols
+                newTable.append(self.data[row])
+        self.data = []
+        self.data = copy.deepcopy(newTable) #save valid rows to data
+
     def remove_rows_with_missing_values(self):
         """
         Remove rows from the table data that contain a missing value ("NA").
@@ -204,7 +213,7 @@ class MyPyTable:
         newTable = []
         for row in range(len(self.data)): #loop through data
             for column in range(len(self.column_names)): #loop through cols
-                if self.data[row][column] != "NA": #if not NA
+                if self.data[row][column] != "NA" and self.data[row][column] != "N/A": #if not NA
                     count +=1
                 else:
                     pass
@@ -262,7 +271,11 @@ class MyPyTable:
             except:
                 pass
         column_elements = [val for val in column_elements if val != "NA" and val != 'N/A']
-        return max(set(column_elements), key=column_elements.count) #gets average
+        try:
+            return max(set(column_elements), key=column_elements.count)
+        except:
+            print(col_name, column_elements, self.data)
+            return self.data[0][column_index]
 
     def replace_missing_values_with_column_most_common(self, col_name):
         """For columns with continuous data, fill missing values in a column
@@ -282,11 +295,12 @@ class MyPyTable:
                 pass
         try:
             column_elements = [val for val in column_elements if val != "NA" or val != 'N/A']
-            common = max(set(column_elements), key=column_elements.count) #gets average
-            for row in range(len(self.data)):
-                if self.data[row][column_index] == "NA" or self.data[row][column_index] == 'N/A' or self.data[row][column_index] == "" or self.data[row][column_index] == []\
-                    or self.data[row][column_index] == 0.0 or self.data[row][column_index] == '0.0' or ("–" in self.data[row][column_index] and col_name == 'year'): #if the row is na
-                    self.data[row][column_index] = common #replace with common
+            if len(column_elements) != 0:
+                random.seed(0)
+                for row in range(len(self.data)):
+                    if self.data[row][column_index] == "NA" or self.data[row][column_index] == 'N/A' or self.data[row][column_index] == "" or self.data[row][column_index] == []\
+                        or self.data[row][column_index] == 0.0 or self.data[row][column_index] == '0.0' or ("–" in self.data[row][column_index] and col_name == 'year'): #if the row is na
+                        self.data[row][column_index] = random.choice(column_elements) #replace with common
         except:
             pass
 
@@ -314,6 +328,13 @@ class MyPyTable:
                         data[index] = float(float_val)
                     elif "min" in data[index]:
                         data[index] = float(data[index].split(" ")[0])
+                    elif "$" in data[index]:
+                        print(data[index])
+                        try:
+                            value = data[index].strip('$')
+                            data[index] = float(str(value).replace(',',''))
+                        except:
+                            pass
                     elif "NA" in data[index] or len(data[index]) <= 1:
                         try:
                             data[index] = float(str(most_common).replace(',',''))
@@ -323,8 +344,6 @@ class MyPyTable:
                         try:
                             data[index] = float(str(most_common).replace(',',''))
                         except:
-                            print(most_common)
-
                             data[index] = most_common
                     elif ',' in data[index]:
                         data[index] = float(str(data[index]).replace(',',''))

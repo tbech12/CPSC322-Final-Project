@@ -130,6 +130,48 @@ def normalize(x_train, x_test):
 
     return x_train, x_test #retrun x train and test
 
+def normalize_2(x_train, x_test):
+    """ Normalizes the set of data
+
+    Args:
+        x_train: list of lists - tuples
+        y_train: list of lists - tuples
+
+    Returns:
+        Normalized data set
+
+    """
+    the_min_x1 = x_train[0][0]
+    the_min_x2 = x_train[0][1]
+    for row in range(len(x_train)):
+        if x_train[row][0] < the_min_x1:
+            the_min_x1 = x_train[row][0]
+        if x_train[row][1] < the_min_x2:
+            the_min_x2 = x_train[row][1]
+
+    for row in range(len(x_train)):
+        x_train[row][0] = (x_train[row][0] - the_min_x1)
+        x_train[row][1] = (x_train[row][1] - the_min_x2)
+
+    the_max_x1 = x_train[0][0]
+    the_max_x2 = x_train[0][1]
+
+    for row in range(len(x_train)):
+        if x_train[row][0] > the_max_x1:
+            the_max_x1 = x_train[row][0]
+        if x_train[row][1] > the_max_x2:
+            the_max_x2 = x_train[row][1]
+
+    for row in range(len(x_train)):
+        x_train[row][0] /= the_max_x1
+        x_train[row][1] /= the_max_x2
+
+
+    x_test[0][0] = (x_test[0][0] - the_min_x1) / the_max_x1
+    x_test[0][1] = (x_test[0][1] - the_min_x2) / the_max_x2
+
+    return x_train, x_test
+
 def generate_random_instances(n, table):
     '''
         gets random instances from the table
@@ -1003,3 +1045,113 @@ def visual_tree(tree, dot_fname, pdf_fname, attribute_names):
     if dot_fname and pdf_fname and attribute_names:
         for subtree in tree:
             print(subtree)
+
+def find_low_mid_high(data, low:float, high:float):
+    values = []
+    for val in data:
+        if val != "N/A" or val != "N/A":
+            if val >= high:
+                values.append("High")
+            elif low > val < high:
+                values.append("Mid")
+            else:
+                values.append("Low")
+        else:
+            values.append("Mid")
+    return values
+
+def find_low_mid_high_for_dates(data, low, high):
+    low = datetime.strptime(low, "%Y-%m-%d")
+    high = datetime.strptime(high, "%Y-%m-%d")
+    values = []
+    for val in data:
+        try:
+            val = datetime.strptime(val, "%Y-%m-%d")
+        except:
+            val = datetime.strptime(val, '%d %b %Y')
+        if val != "N/A" or val != "N/A":
+            if val >= high:
+                values.append("New")
+            elif low > val < high:
+                values.append("Mid")
+            else:
+                values.append("Old")
+        else:
+            values.append("Mid")
+    return values
+
+def get_genre_sum(genre_list):
+    genres = ['Action', 'Adventure', 'Fantasy', 'Thriller',
+     'Crime', 'Drama', 'Sci-Fi', 'Animation', 'Comedy',
+     'Family', 'Western', 'Romance', 'Horror',
+     'History', 'Biography', 'Mystery', 'War',
+     'Sport', 'Short', 'Music', 'Musical', 'Documentary',
+     'N/A']
+    converted_genre = []
+    for genre_form_list in genre_list:
+        sum = 0
+        for genre in genre_form_list:
+            if genres[0] == genre:
+                sum += 21
+            elif genres[1] == genre:
+                sum += 20
+            elif genres[2] == genre:
+                sum += 19
+            elif genres[3] == genre:
+                sum += 18
+            elif genres[4] == genre:
+                sum += 17
+            elif genres[5] == genre:
+                sum += 16
+            elif genres[6] == genre:
+                sum += 15
+            elif genres[7] == genre:
+                sum += 14
+            elif genres[8] == genre:
+                sum += 13
+            elif genres[9] == genre:
+                sum += 12
+            elif genres[10] == genre:
+                sum += 11
+            elif genres[11] == genre:
+                sum += 10
+            elif genres[12] == genre:
+                sum += 9
+            elif genres[13] == genre:
+                sum += 8
+            elif genres[14] == genre:
+                sum += 7
+            elif genres[15] == genre:
+                sum += 6
+            elif genres[16] == genre:
+                sum += 5
+            elif genres[17] == genre:
+                sum += 4
+            elif genres[18] == genre:
+                sum += 3
+            elif genres[19] == genre:
+                sum += 2
+            elif genres[20] == genre:
+                sum += 1
+            elif genres[21] == genre:
+                sum += 0
+        converted_genre.append(sum)
+    return converted_genre
+
+def get_genre_rating(rating_list):
+    ratings = ['PG-13', 'R', 'G', 'N/A','Not Rated']
+    converted_rating = []
+    for rating in rating_list:
+        sum = 0
+        if ratings[0] == rating:
+            sum += 4
+        elif ratings[1] == rating:
+            sum += 3
+        elif ratings[2] == rating:
+            sum += 2
+        elif ratings[3] == rating:
+            sum += 0
+        else:
+            sum += 1
+        converted_rating.append(sum)
+    return converted_rating
