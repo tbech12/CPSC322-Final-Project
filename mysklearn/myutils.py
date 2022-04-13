@@ -663,7 +663,7 @@ def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None):
     print("=" * 80)
     print("Step 2: Accuracy and error rate")
     print("=" * 80)
-    print("Stratified 10-fold Cross Validation")
+    print("Stratified 10-fold Cross Validation and Test Train Split")
     print("Naive Bayes: accuracy = ", round(nb_accuracy, 2),
           ", error rate = ", round(1-nb_accuracy, 2), sep='')
     print("Dummy: accuracy = ", round(dummy_accuracy, 2),
@@ -684,9 +684,30 @@ def print_precision_recall_f1(knn, nb_class, dummy, tree=None):
     print("=" * 80)
     print("Step 2: Precision, recall, and F1 measure")
     print("=" * 80)
-    print("Stratified 10-fold Cross Validation")
+    print("Stratified 10-fold Cross Validation and Test Train Split")
     print("KNN: precision = ", round(knn[0], 2), ", recall = ",
           round(knn[1], 2), ", F1 measure = ", round(knn[2], 2), sep='')
+    print("Naive Bayes: precision = ", round(nb_class[0], 2), ", recall = ",
+          round(nb_class[1], 2), ", F1 measure = ", round(nb_class[2], 2), sep='')
+    print("Dummy: precision = ", round(dummy[0], 2), ", recall = ",
+          round(dummy[1], 2), ", F1 measure = ", round(dummy[2], 2), sep='')
+    if tree is not None:
+        print("Decision Tree: precision = ", round(tree[0], 2), ", recall = ",
+          round(tree[1], 2), ", F1 measure = ", round(tree[2], 2), sep='')
+
+def print_precision_recall_f1_2(nb_class, dummy, tree=None):
+    """print Precision recall and f1
+
+    Args:
+        knn_accuracy (list): Precision recall and f1 to KNN
+        nb_accuracy (list): Precision recall and f1 to NB
+        dummy_accuracy (list): Precision recall and f1 to DUMMY
+    """
+    print()
+    print("=" * 80)
+    print("Step 2: Precision, recall, and F1 measure")
+    print("=" * 80)
+    print("Stratified 10-fold Cross Validation and Test Train")
     print("Naive Bayes: precision = ", round(nb_class[0], 2), ", recall = ",
           round(nb_class[1], 2), ", F1 measure = ", round(nb_class[2], 2), sep='')
     print("Dummy: precision = ", round(dummy[0], 2), ", recall = ",
@@ -1122,22 +1143,123 @@ def get_genre_sum(genre_list):
         converted_genre.append(sum)
     return converted_genre
 
+def get_genre_count(genre_list):
+    genres = ['Action', 'Adventure', 'Fantasy', 'Thriller',
+     'Crime', 'Drama', 'Sci-Fi', 'Animation', 'Comedy',
+     'Family', 'Western', 'Romance', 'Horror',
+     'History', 'Biography', 'Mystery', 'War',
+     'Sport', 'Short', 'Music', 'Musical', 'Documentary']
+    genres.reverse()
+    count_of_genres = [0 for g in genres]
+    for genre_form_list in genre_list:
+        if genres[18] in genre_form_list:
+            count_of_genres[18] += 1
+        elif genres[17] in genre_form_list:
+            count_of_genres[17] += 1
+        elif genres[16] in genre_form_list:
+            count_of_genres[16] += 1
+        elif genres[15] in genre_form_list:
+            count_of_genres[15] += 1
+        elif genres[14] in genre_form_list:
+            count_of_genres[14] += 1
+        elif genres[13] in genre_form_list:
+            count_of_genres[13] += 1
+        elif genres[12] in genre_form_list:
+            count_of_genres[12] += 1
+        elif genres[11] in genre_form_list:
+            count_of_genres[11] += 1
+        elif genres[10] in genre_form_list:
+            count_of_genres[10] += 1
+        elif genres[9] in genre_form_list:
+            count_of_genres[9] += 1
+        elif genres[8] in genre_form_list:
+            count_of_genres[8] += 1
+        elif genres[7] in genre_form_list:
+            count_of_genres[7] += 1
+        elif genres[6] in genre_form_list:
+            count_of_genres[6] += 1
+        elif genres[5] in genre_form_list:
+            count_of_genres[5] += 1
+        elif genres[4] in genre_form_list:
+            count_of_genres[4] += 1
+        elif genres[3] in genre_form_list:
+            count_of_genres[3] += 1
+        elif genres[2] in genre_form_list:
+            count_of_genres[2] += 1
+        elif genres[1] in genre_form_list:
+            count_of_genres[1] += 1
+        elif genres[0] in genre_form_list:
+            count_of_genres[0] += 1
+    return count_of_genres, genres
+
 def get_rating_sum(rating_list):
-    ratings = ['PG-13', 'R', 'G', 'N/A','Not Rated']
+    ratings = ['Approved', 'G', 'GP', 'M/PG', 'N/A',
+    'NC-17', 'Not Rated', 'PG', 'PG-13', 'Passed',
+    'R', 'TV-14', 'TV-G', 'TV-MA', 'TV-PG', 'TV-Y7-FV',
+    'Unrated', 'X']
     converted_rating = []
     for rating in rating_list:
         sum = 0
-        if ratings[0] == rating:
+        if ratings[18] == rating:
+            sum += 18
+        elif ratings[17] == rating:
+            sum += 17
+        elif ratings[16] == rating:
+            sum += 16
+        elif ratings[15] == rating:
+            sum += 15
+        elif ratings[14] == rating:
+            sum += 14
+        elif ratings[13] == rating:
+            sum += 13
+        elif ratings[12] == rating:
+            sum += 12
+        elif ratings[11] == rating:
+            sum += 11
+        elif ratings[10] == rating:
+            sum += 10
+        elif ratings[9] == rating:
+            sum += 9
+        elif ratings[8] == rating:
+            sum += 8
+        elif ratings[7] == rating:
+            sum += 7
+        elif ratings[6] == rating:
+            sum += 6
+        elif ratings[5] == rating:
+            sum += 5
+        elif ratings[4] == rating:
             sum += 4
-        elif ratings[1] == rating:
+        elif ratings[3] == rating:
             sum += 3
         elif ratings[2] == rating:
             sum += 2
-        elif ratings[3] == rating:
+        elif ratings[1] == rating:
+            sum += 1
+        elif ratings[0] == rating:
             sum += 0
         else:
             sum += 1
         converted_rating.append(sum)
+    return converted_rating
+
+def get_rating_count(rating_list):
+    ratings = ['Approved', 'G', 'GP', 'M/PG', 'N/A',
+    'NC-17', 'Not Rated', 'PG', 'PG-13', 'Passed',
+    'R', 'TV-14', 'TV-G', 'TV-MA', 'TV-PG', 'TV-Y7-FV',
+    'Unrated', 'X']
+    converted_rating = [0,0,0,0,0]
+    for rating in rating_list:
+        if ratings[0] == rating:
+            converted_rating[0] += 1
+        elif ratings[1] == rating:
+            converted_rating[1] += 1
+        elif ratings[2] == rating:
+            converted_rating[2] += 1
+        elif ratings[3] == rating:
+            converted_rating[3] += 1
+        else:
+            converted_rating[0] += 1
     return converted_rating
 
 def convert_list_to_int(table, col_name):
