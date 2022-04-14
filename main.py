@@ -32,7 +32,8 @@ def main():
         movie_table = clean_movie_data()
     else:
         movie_table.load_from_file("input_data/cleaned_movie_data.csv", False)
-    dummy, naive, tree, random_forest = pc.set_up(movie_table)
+    #dummy, naive, tree, random_forest = pc.set_up(movie_table)
+    dummy, naive, tree, random_forest = pc.set_up(movie_table, False)
 
 
 if __name__ == "__main__":

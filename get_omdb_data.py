@@ -70,9 +70,7 @@ def download_from_given_place():
         r_params = {"t":movie}
         r = requests.get(url = OMDB_API_URL, params=r_params)
         if r.status_code == 200:
-            print(count)
             r_data = r.json()
-            print(r_data)
             try:
                 r_data = json.dumps(r_data)
                 r_data = json.loads(r_data)
