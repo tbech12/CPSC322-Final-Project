@@ -18,7 +18,7 @@ def bar_chart(values, columns, title, x_axis_name, y_axis_name):
     plt.xlabel(x_axis_name, size = 30)
     plt.ylabel(y_axis_name, size = 30)
     plt.bar(values, columns, align="edge", width=.4)
-    plt.xticks(size = 20, rotation=90)
+    plt.xticks(size = 20, rotation=45)
     plt.yticks(size = 20)
     plt.show()
 

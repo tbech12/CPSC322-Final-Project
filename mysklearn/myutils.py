@@ -1144,15 +1144,32 @@ def get_genre_sum(genre_list):
     return converted_genre
 
 def get_genre_count(genre_list):
-    genres = ['Action', 'Adventure', 'Fantasy', 'Thriller',
-     'Crime', 'Drama', 'Sci-Fi', 'Animation', 'Comedy',
-     'Family', 'Western', 'Romance', 'Horror',
-     'History', 'Biography', 'Mystery', 'War',
-     'Sport', 'Short', 'Music', 'Musical', 'Documentary']
+    genres = ['Documentary', 'Musical', 'Music', 'Short', 'Sport', 'War', 'Foreign',
+     'Mystery', 'Biography', 'History', 'Horror', 'Romance', 'Talk-Show', 'TV Movie',
+     'Western', 'Family', 'Comedy', 'Animation', 'Sci-Fi', 'Science Fiction',
+     'Drama', 'Crime', 'Thriller', 'Fantasy', 'Adventure', 'Action', 'NA', '']
     genres.reverse()
     count_of_genres = [0 for g in genres]
     for genre_form_list in genre_list:
-        if genres[18] in genre_form_list:
+        if genres[27] in genre_form_list:
+            count_of_genres[27] += 1
+        elif genres[26] in genre_form_list:
+            count_of_genres[26] += 1
+        elif genres[25] in genre_form_list:
+            count_of_genres[25] += 1
+        elif genres[24] in genre_form_list:
+            count_of_genres[24] += 1
+        elif genres[23] in genre_form_list:
+            count_of_genres[23] += 1
+        elif genres[22] in genre_form_list:
+            count_of_genres[22] += 1
+        elif genres[21] in genre_form_list:
+            count_of_genres[21] += 1
+        elif genres[20] in genre_form_list:
+            count_of_genres[20] += 1
+        elif genres[19] in genre_form_list:
+            count_of_genres[19] += 1
+        elif genres[18] in genre_form_list:
             count_of_genres[18] += 1
         elif genres[17] in genre_form_list:
             count_of_genres[17] += 1
@@ -1190,6 +1207,7 @@ def get_genre_count(genre_list):
             count_of_genres[1] += 1
         elif genres[0] in genre_form_list:
             count_of_genres[0] += 1
+    count_of_genres = [val for val in count_of_genres if val != 0]
     return count_of_genres, genres
 
 def get_rating_sum(rating_list):
@@ -1270,3 +1288,42 @@ def convert_list_to_int(table, col_name):
         elif 'N/A' in data[index]:
             data[index] = 6.0
 
+def seperate_genre(values):
+    genre_one = []
+    genre_two = []
+    genre_three = []
+    for value in values:
+        try:
+            genres = value.strip("['']").replace("', '", ', ').split(", ")
+            if len(genres) >= 1 and genres[0] != "N/A":
+                genre_one.append(genres[0])
+            else:
+                genre_one.append("NA")
+
+            if len(genres) >= 2 and genres[0] != "N/A":
+                genre_two.append(genres[1])
+            else:
+                genre_two.append("NA")
+
+            if len(genres) >= 3 and genres[0] != "N/A":
+                genre_three.append(genres[2])
+            else:
+                genre_three.append("NA")
+        except:
+            if len(genres) == 0:
+                genre_one.append("NA")
+                genre_two.append("NA")
+                genre_three.append("NA")
+    return (genre_one, genre_two, genre_three)
+
+def even_out_lists(values, elements_in_list):
+    even_list = []
+    used_columns = []
+    count = [values.count(value) for value in elements_in_list]
+    for value in values:
+        index = elements_in_list.index(value)
+        if count[index] > sum(count)/len(count) and even_list.count(value) < sum(count)/len(count) + sum(count)/len(count):
+            even_list.append(value)
+            if elements_in_list[index] not in used_columns:
+                used_columns.append(elements_in_list[index])
+    return even_list, used_columns
