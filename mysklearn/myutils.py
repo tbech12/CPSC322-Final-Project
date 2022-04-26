@@ -1327,3 +1327,72 @@ def even_out_lists(values, elements_in_list):
             if elements_in_list[index] not in used_columns:
                 used_columns.append(elements_in_list[index])
     return even_list, used_columns
+
+def compute_bootstrapped_sample(table):
+    """computes bootstrapped sample
+
+    Args:
+        table (list): table of values
+
+    Returns:
+        sample, test_set: sample and the test sets
+    """
+    n = len(table)
+    sample = []
+    test = [x for x in range(n)]
+    for _ in range(n):
+        rand_index = random.randrange(0,n)
+        sample.append(table[rand_index])
+        try:
+            test.remove(rand_index)
+        except ValueError:
+            pass
+    test_set = []
+    for i in range(len(test)):
+        test_set.append(table[test[i]])
+    return sample, test_set
+
+
+def compute_random_subset(values, num_values):
+    """gets a random subset of values
+
+    Args:
+        values (list): values
+        num_values (int): number of values
+
+    Returns:
+        shuffled: shuffled values
+    """
+    shuffled = values[:] # shallow copy
+    random.shuffle(shuffled)
+    return shuffled[:num_values]
+
+def get_frequency(pred):
+    """Get frequencys
+
+    Args:
+        pred (list): list of items
+
+    Returns:
+        items, frequency: items and the frequency
+    """
+    # Set items list
+    items = []
+    # Set frequency
+    frequency = []
+    # Traverse
+    for val in pred:
+        # Try
+        try:
+            # Set index
+            index = items.index(val)
+            # Increment pos in frequency
+            frequency[index] += 1
+        # Wrong
+        except ValueError:
+            # Append to items
+            items.append(val)
+            # Append 1
+            frequency.append(1)
+    # Return items and frequency
+    return items, frequency
