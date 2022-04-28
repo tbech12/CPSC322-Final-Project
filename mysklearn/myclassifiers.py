@@ -311,6 +311,7 @@ class MyNaiveBayesClassifier:
         y_predicted = [] #y predicted
         for row in X_test:
             probability = {}
+            #print(self.posteriors)
             for value in self.posteriors: #for values in posteriors
                 probability[value] = self.priors[value] #set the value of probability
                 for i, j in enumerate(row):

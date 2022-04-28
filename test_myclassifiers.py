@@ -291,23 +291,13 @@ tree_actual_1 = ['Attribute', 'att0',
 
 tree_actual_2 = ['Attribute', 'att0',
                     ['Value', 'Junior',
-                        ['Leaf', 'True', 0, 7]
+                        ['Leaf', 'True', 0, 4]
                     ],
                     ['Value', 'Mid',
-                        ['Leaf', 'True', 2, 13]
+                        ['Leaf', 'True', 0, 5]
                     ],
                     ['Value', 'Senior',
-                        ['Attribute', 'att1',
-                            ['Value', 'Java',
-                                ['Leaf', 'False', 0, 2]
-                            ],
-                            ['Value', 'Python',
-                                ['Leaf', 'False', 1, 4]
-                            ],
-                            ['Value', 'R',
-                                ['Leaf', 'True', 1, 4]
-                            ]
-                        ]
+                        ['Leaf', 'True', 0, 4]
                     ]
                 ]
 
@@ -812,18 +802,18 @@ def test_MyRandomForestClassifier_fit():
         y_train.append(interview_table[row][-1])
     # Create a MyDecisionTreeClassifier object
     #print(X_train)
-    test_fit = MyRandomForestClassifier(100, 2, 2)
+    test_fit = MyRandomForestClassifier(20, 7, 2)
     # Call fit
 
     test_fit.fit(X_train, y_train)
     # Test
     #print("working")
-    #print(test_fit.forest)
 
     assert(test_fit.forest[0]['atts']) == ['att0', 'att1']
     assert(test_fit.forest[0]['tree'].tree) == tree_actual_1
 
-    assert(test_fit.forest[1]['atts']) == ['att0', 'att1']
+    print(test_fit.forest[1]['tree'].tree)
+    assert(test_fit.forest[1]['atts']) == ['att0', 'att2']
     assert(test_fit.forest[1]['tree'].tree) == tree_actual_2
 
 def test_MyRandomForestClassifier_predict():
@@ -850,7 +840,7 @@ def test_MyRandomForestClassifier_predict():
         y_train.append(interview_table[row][-1])
     # Create a MyDecisionTreeClassifier object
     #print(X_train)
-    test_fit = MyRandomForestClassifier(100, 2, 2)
+    test_fit = MyRandomForestClassifier(27, 7, 2)
     # Call fit
     actual = ['True', 'True', 'True']
     test_fit.fit(X_train, y_train)

@@ -1,4 +1,5 @@
 import os
+import pickle
 import get_omdb_data as omdb
 import clean_tmdb_data as tmdb
 import prediction_class as pc
@@ -32,8 +33,13 @@ def main():
         movie_table = clean_movie_data()
     else:
         movie_table.load_from_file("input_data/cleaned_movie_data.csv", False)
-    #dummy, naive, tree, random_forest = pc.set_up(movie_table)
-    dummy, naive, tree, random_forest = pc.set_up(movie_table, False)
+    dummy, naive, tree, random_forest = pc.set_up(movie_table)
+    packaged_obj = [dummy, naive, tree, random_forest]
+    print(naive.posteriors)
+    outfile = open("classifiers.p", "wb")
+    print(f"Picked to {outfile}")
+    pickle.dump(packaged_obj, outfile)
+    outfile.close()
 
 
 if __name__ == "__main__":

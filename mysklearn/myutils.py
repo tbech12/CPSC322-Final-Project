@@ -651,7 +651,7 @@ def print_accuracys(knn_accuracy, nb_accuracy, dummy_accuracy, tree_accuracy = N
         print("Decision Tree: accuracy = ", round(tree_accuracy, 2),
           ", error rate = ", round(1-tree_accuracy, 2), sep='')
 
-def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None):
+def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None, forest_accuracy=None):
     """print Accuracys
 
     Args:
@@ -671,8 +671,11 @@ def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None):
     if tree_accuracy is not None:
         print("Decision Tree: accuracy = ", round(tree_accuracy, 2),
           ", error rate = ", round(1-tree_accuracy, 2), sep='')
+    if forest_accuracy is not None:
+        print("Random Forest: accuracy = ", round(forest_accuracy, 2),
+          ", error rate = ", round(1-forest_accuracy, 2), sep='')
 
-def print_precision_recall_f1(knn, nb_class, dummy, tree=None):
+def print_precision_recall_f1(knn, nb_class, dummy, tree=None, forest=None):
     """print Precision recall and f1
 
     Args:
@@ -694,8 +697,11 @@ def print_precision_recall_f1(knn, nb_class, dummy, tree=None):
     if tree is not None:
         print("Decision Tree: precision = ", round(tree[0], 2), ", recall = ",
           round(tree[1], 2), ", F1 measure = ", round(tree[2], 2), sep='')
+    if forest is not None:
+        print("Random Forest: precision = ", round(forest[0], 2), ", recall = ",
+          round(forest[1], 2), ", F1 measure = ", round(forest[2], 2), sep='')
 
-def print_precision_recall_f1_2(nb_class, dummy, tree=None):
+def print_precision_recall_f1_2(nb_class, dummy, tree=None, forest=None):
     """print Precision recall and f1
 
     Args:
@@ -715,6 +721,9 @@ def print_precision_recall_f1_2(nb_class, dummy, tree=None):
     if tree is not None:
         print("Decision Tree: precision = ", round(tree[0], 2), ", recall = ",
           round(tree[1], 2), ", F1 measure = ", round(tree[2], 2), sep='')
+    if forest is not None:
+        print("Random Forest: precision = ", round(forest[0], 2), ", recall = ",
+          round(forest[1], 2), ", F1 measure = ", round(forest[2], 2), sep='')
 
 def print_precision_recall_f1_helper(precision, recall, f1):
     """print Precision recall and f1
@@ -873,6 +882,7 @@ def get_attribute_domains(X_train, header):
             if x[i] not in attribute_domains[j]:
                 attribute_domains[j].append(x[i])
     for key, val in attribute_domains.items():
+        val = ['None' if value is None else value for value in val]
         attribute_domains[key] = sorted(val)
     return attribute_domains
 
@@ -1110,6 +1120,41 @@ def find_low_mid_high(data, low:float, high:float):
 
     return values
 
+def low_or_high(val, low:float, high:float):
+    if "$" in val:
+        val = val.strip('$')
+        val = val.replace(",","")
+    try:
+        if val != "N/A" or val != "N/A":
+            if val >= high:
+                return ("High")
+            elif low > val < high:
+                return ("Mid")
+            else:
+                return ("Low")
+        else:
+            return ("Mid")
+    except:
+        return ("Mid")
+
+
+def clean(data):
+    values = []
+    for val in data:
+        if "$" in val:
+            val = val.strip('$')
+            val = val.replace(",","")
+            values.append(val)
+        else:
+            values.append(str(val))
+    return values
+
+def clean_val(val):
+    if "$" in val:
+        val = val.strip('$')
+        val = val.replace(",","")
+        return(val)
+
 def find_low_mid_high_for_dates(data, low, high):
     low = datetime.strptime(low, "%Y-%m-%d")
     high = datetime.strptime(high, "%Y-%m-%d")
@@ -1143,7 +1188,7 @@ def get_genre_sum(genre_list):
         converted_genre.append(sum)
     return converted_genre
 
-def get_genre_count(genre_list):
+def get_genre_count(genre_list, remove_zeros=True):
     genres = ['Documentary', 'Musical', 'Music', 'Short', 'Sport', 'War', 'Foreign',
      'Mystery', 'Biography', 'History', 'Horror', 'Romance', 'Talk-Show', 'TV Movie',
      'Western', 'Family', 'Comedy', 'Animation', 'Sci-Fi', 'Science Fiction',
@@ -1207,7 +1252,8 @@ def get_genre_count(genre_list):
             count_of_genres[1] += 1
         elif genres[0] in genre_form_list:
             count_of_genres[0] += 1
-    count_of_genres = [val for val in count_of_genres if val != 0]
+    if remove_zeros == True:
+        count_of_genres = [val for val in count_of_genres if val != 0]
     return count_of_genres, genres
 
 def get_rating_sum(rating_list):
