@@ -13,6 +13,10 @@ app = Flask(__name__,template_folder='template')
 
 # we are now ready to setup our first "route"
 # route is a function that handles a request
+app.route("/favicon.ico", methods=["GET"])
+def error_route():
+    return redirect(url_for(".index"))
+
 @app.route("/", methods =["GET", "POST"])
 def index():
     # we can return content and status code
