@@ -4,7 +4,7 @@ import pickle
 import os
 import collections
 from flask import Flask, jsonify, request, render_template, redirect, url_for
-from mysklearn.myclassifiers import MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier, MyRandomForestClassifier
+#from mysklearn.myclassifiers import MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier, MyRandomForestClassifier
 
 
 # create our web app
@@ -64,10 +64,6 @@ def predict():
 
 def prediction_classes(instance):
     file = ["dummy.pkl", "naive.pkl", "tree.pkl", "forest.pkl"]
-    dummy = MyDummyClassifier()
-    naive = MyNaiveBayesClassifier()
-    tree = MyDecisionTreeClassifier()
-    forest = MyRandomForestClassifier(200, 2, 2)
     dummy = load_model(file[0])
     naive = load_model(file[1])
     tree = load_model(file[2])
@@ -124,7 +120,7 @@ def load_model(filename):
 
 if __name__ == "__main__":
     # Deployment
-    port = os.environ.get("PORT", 5001)
-    app.run(debug=False, port=port, host="0.0.0.0") # TODO: turn debug off
-    #app.run(debug=True, port=5000)
+    #port = os.environ.get("PORT", 5001)
+    #app.run(debug=False, port=port, host="0.0.0.0") # TODO: turn debug off
+    app.run(debug=True, port=5000)
     # when deploy to "production"
