@@ -29,7 +29,7 @@ def index():
         release_dates = request.form.get("release_dates", "")
         rated = request.form.get("rated", "")
         print("FORM:", metascore, imdbrating, boxoffices_high_low, runtimes, years, release_dates, rated)
-        return redirect(url_for(".predict", metascore=metascore, imdbrating=imdbrating, boxoffices_high_low=boxoffices_high_low,
+        return redirect(url_for("predict", metascore=metascore, imdbrating=imdbrating, boxoffices_high_low=boxoffices_high_low,
                         runtimes=runtimes, years=years, release_dates=release_dates, rated=rated))
         #redirect("/predict?metascore={metascore}&imdbrating={imdbrating}&boxoffices={boxoffices_high_low}&runtimes={runtimes}&years={years}&release_dates={release_dates}&rated={rated}")
     elif request.method == "GET":
