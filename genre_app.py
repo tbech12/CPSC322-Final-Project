@@ -28,7 +28,9 @@ def index():
         return redirect(url_for(".predict", metascore=metascore, imdbrating=imdbrating, boxoffices_high_low=boxoffices_high_low,
                         runtimes=runtimes, years=years, release_dates=release_dates, rated=rated))
         #redirect("/predict?metascore={metascore}&imdbrating={imdbrating}&boxoffices={boxoffices_high_low}&runtimes={runtimes}&years={years}&release_dates={release_dates}&rated={rated}")
-    return render_template('index.html'), 200
+    elif request.method == "GET":
+        return render_template('index.html'), 200
+    return "ERROR", 404
 
 # now for the /predict endpoint
 @app.route("/predict", methods=["GET","POST"])
