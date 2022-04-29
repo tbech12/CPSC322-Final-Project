@@ -430,13 +430,16 @@ class MyDecisionTreeClassifier:
         myutils.visual_tree(self.tree, dot_fname, pdf_fname, attribute_names)# (BONUS) fix this
 
 class MyRandomForestClassifier:
-    def __init__(self, N, M, F):
+    def __init__(self, N, M, F, forest=None):
         """Initializer for MyRandomForestClassifier.
 
         """
         self.X_train = None
         self.y_train = None
-        self.forest = None
+        if forest != None:
+            self.forest = forest
+        else:
+            self.forest = None
         self.N = N
         self.M = M
         self.F = F

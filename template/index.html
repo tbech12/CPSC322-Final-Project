@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>Genre Predictor CS322</title>
+</head>
+<body>
+    <div class="page">
+      <form method="POST">
+        <label class="field field_v1">
+          <input class="field__input" placeholder="e.g 83.0" name="metascore">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Metascore e.g 83.0</span>
+          </span>
+        </label>
+        <label class="field field_v2">
+          <input class="field__input" placeholder="e.g 7.9" name="imdbrating">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter IMDbrating e.g 7.9</span>
+          </span>
+        </label>
+        <label class="field field_v3">
+          <input class="field__input" placeholder="e.g High" name="boxoffices">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Box Office e.g High, Low or Mid</span>
+          </span>
+        </label>
+        <label class="field field_v4">
+          <input class="field__input" placeholder="e.g 162.0" name="runtimes">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Runtimes e.g 162.0</span>
+          </span>
+        </label>
+        <label class="field field_v5">
+          <input class="field__input" placeholder="e.g 2009.0" name="years">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Year active e.g 2009.0</span>
+          </span>
+        </label>
+        <label class="field field_v6">
+          <input class="field__input" placeholder="e.g 20091218" name="release_dates">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Release Date e.g 2009/12/18</span>
+          </span>
+        </label>
+        <label class="field field_v7">
+          <input class="field__input" placeholder="e.g PG-13" name="rated">
+          <span class="field__label-wrap">
+            <span class="field__label">Enter Rating e.g PG-13</span>
+          </span>
+        </label>
+        <label class="field field_v8">
+          <input type="submit">
+        </label>
+      </form>
+    </div>
+</body>

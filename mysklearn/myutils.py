@@ -6,6 +6,7 @@ Programming Assignment #4 and #5 and #6 and #7
 Description: utils for classifers and pa4 and pa5 and pa6 notebook
 """
 import random
+import collections
 import math
 import ast
 import numpy as np
@@ -651,7 +652,7 @@ def print_accuracys(knn_accuracy, nb_accuracy, dummy_accuracy, tree_accuracy = N
         print("Decision Tree: accuracy = ", round(tree_accuracy, 2),
           ", error rate = ", round(1-tree_accuracy, 2), sep='')
 
-def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None, forest_accuracy=None):
+def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None, forest_accuracy = None, ensemble_accuracy = None):
     """print Accuracys
 
     Args:
@@ -674,6 +675,9 @@ def print_accuracys_2(nb_accuracy, dummy_accuracy, tree_accuracy = None, forest_
     if forest_accuracy is not None:
         print("Random Forest: accuracy = ", round(forest_accuracy, 2),
           ", error rate = ", round(1-forest_accuracy, 2), sep='')
+    if ensemble_accuracy is not None:
+        print("Ensemble Classifier: accuracy = ", round(ensemble_accuracy, 2),
+          ", error rate = ", round(1-ensemble_accuracy, 2), sep='')
 
 def print_precision_recall_f1(knn, nb_class, dummy, tree=None, forest=None):
     """print Precision recall and f1
@@ -701,7 +705,7 @@ def print_precision_recall_f1(knn, nb_class, dummy, tree=None, forest=None):
         print("Random Forest: precision = ", round(forest[0], 2), ", recall = ",
           round(forest[1], 2), ", F1 measure = ", round(forest[2], 2), sep='')
 
-def print_precision_recall_f1_2(nb_class, dummy, tree=None, forest=None):
+def print_precision_recall_f1_2(nb_class, dummy, tree=None, forest=None, ensemble=None):
     """print Precision recall and f1
 
     Args:
@@ -724,6 +728,9 @@ def print_precision_recall_f1_2(nb_class, dummy, tree=None, forest=None):
     if forest is not None:
         print("Random Forest: precision = ", round(forest[0], 2), ", recall = ",
           round(forest[1], 2), ", F1 measure = ", round(forest[2], 2), sep='')
+    if ensemble is not None:
+        print("Ensemble Classifier: precision = ", round(ensemble[0], 2), ", recall = ",
+          round(ensemble[1], 2), ", F1 measure = ", round(ensemble[2], 2), sep='')
 
 def print_precision_recall_f1_helper(precision, recall, f1):
     """print Precision recall and f1
@@ -1368,7 +1375,7 @@ def even_out_lists(values, elements_in_list):
     count = [values.count(value) for value in elements_in_list]
     for value in values:
         index = elements_in_list.index(value)
-        if count[index] > sum(count)/len(count) and even_list.count(value) < sum(count)/len(count) + sum(count)/len(count):
+        if count[index] > sum(count)/len(count) and even_list.count(value) < sum(count)/len(count) + (sum(count)/len(count)):
             even_list.append(value)
             if elements_in_list[index] not in used_columns:
                 used_columns.append(elements_in_list[index])
@@ -1442,3 +1449,36 @@ def get_frequency(pred):
             frequency.append(1)
     # Return items and frequency
     return items, frequency
+
+def ensemble_helper(dummy, nb, tree, forest, X_test):
+    strat_ensemble = []
+    for test in X_test:
+        prediction = []
+        try:
+            prediction.extend(nb.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(dummy.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(tree.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(forest.predict([test]))
+        except:
+            prediction.append(None)
+
+        most_freq = [item for item, count in collections.Counter(prediction).items() if count > 1]
+        if most_freq == []:
+            strat_ensemble.append(prediction[0])
+        elif len(most_freq) > 1:
+            strat_ensemble.append(most_freq[0])
+        else:
+            strat_ensemble.append(most_freq[0])
+    return strat_ensemble
