@@ -2,10 +2,9 @@
 # for our web app (running our API service)
 import pickle
 import os
+import collections
 from flask import Flask, jsonify, request, render_template, redirect, url_for
-import mysklearn.myutils as myutils
-from mysklearn.mypytable import MyPyTable
-from mysklearn.myclassifiers import MyKNeighborsClassifier, MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier, MyRandomForestClassifier
+from mysklearn.myclassifiers import MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier, MyRandomForestClassifier
 
 
 # create our web app
@@ -68,7 +67,40 @@ def prediction_classes(instance):
     tree = load_model(file[2])
     forest = load_model(file[3])
 
-    return myutils.ensemble_helper(dummy, naive, tree, forest, instance)[0]
+    return ensemble_helper(dummy, naive, tree, forest, instance)[0]
+
+def ensemble_helper(dummy, nb, tree, forest, X_test):
+    strat_ensemble = []
+    for test in X_test:
+        prediction = []
+        try:
+            prediction.extend(nb.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(dummy.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(tree.predict([test]))
+        except:
+            prediction.append(None)
+
+        try:
+            prediction.extend(forest.predict([test]))
+        except:
+            prediction.append(None)
+
+        most_freq = [item for item, count in collections.Counter(prediction).items() if count > 1]
+        if most_freq == []:
+            strat_ensemble.append(prediction[0])
+        elif len(most_freq) > 1:
+            strat_ensemble.append(most_freq[0])
+        else:
+            strat_ensemble.append(most_freq[0])
+    return strat_ensemble
 
 def check_if_all_none(list_of_elem):
     """ Check if all elements in list are None """
