@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import utils
 plt.style.use('seaborn-dark')
 
-def bar_chart(values, columns, title, x_axis_name, y_axis_name):
+def bar_chart(values, columns, title, x_axis_name, y_axis_name, save=False, file_name=""):
     '''
         Function to plot a barchart
     '''
@@ -20,7 +20,10 @@ def bar_chart(values, columns, title, x_axis_name, y_axis_name):
     plt.bar(values, columns, align="edge", width=.4)
     plt.xticks(size = 20, rotation=45)
     plt.yticks(size = 20)
+    fig = plt.gcf()
     plt.show()
+    if save is True:
+        fig.savefig("graphs/" + file_name + ".png")
 
 def pie_chart(nums, the_labels, title):
     '''
