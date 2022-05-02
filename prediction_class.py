@@ -176,7 +176,7 @@ def predict_genre_test_train(movie_table: MyPyTable):
         tmp.append(rated[val])
         x_train.append(tmp)
 
-    X_train, X_test, split_y_train, split_y_test = myevaluation.train_test_split(x_train, y_train, random_state=163)
+    X_train, X_test, split_y_train, split_y_test = myevaluation.train_test_split(x_train, y_train, random_state=25)
 
     strat_nb = []
     strat_dummy = []

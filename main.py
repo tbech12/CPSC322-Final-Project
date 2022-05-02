@@ -45,6 +45,6 @@ def main():
         outfile.close()
 
 if __name__ == "__main__":
-    omdb.get_data()
+    #omdb.get_data() #initally needed this not need now
     tmdb.clean_data(False) #Set True for first run
     main()
