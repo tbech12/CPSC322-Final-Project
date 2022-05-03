@@ -1,7 +1,11 @@
+"""
+Programmer: Troy and James
+Class: CptS 322-01, Spring 2022
+Programming Final Project
+"""
 import os
 import pickle
 
-from regex import F
 import get_omdb_data as omdb
 import clean_tmdb_data as tmdb
 import prediction_class as pc
@@ -10,6 +14,11 @@ from mysklearn.mypytable import MyPyTable
 from mysklearn.myclassifiers import MyKNeighborsClassifier, MyDummyClassifier, MyNaiveBayesClassifier, MyDecisionTreeClassifier, MyRandomForestClassifier
 
 def clean_movie_data():
+    """cleans and combines the data
+
+    Returns:
+        movie_table: cleaned movie table
+    """
     omdb_table = MyPyTable()
     omdb_table.load_from_file("input_data/omdb_data.csv")
     tmdb_table_movies = MyPyTable()
@@ -29,20 +38,24 @@ def clean_movie_data():
     return movie_table
 
 def main():
-    file_exists = os.path.exists('input_data/cleaned_movie_data.csv')
+    """
+    DRIVER FOR THE PREDICTING AND CLEANING
+    """
+    file_exists = os.path.exists('input_data/cleaned_movie_data.csv') #see if file exsists
     movie_table = MyPyTable()
     if not(file_exists):
-        movie_table = clean_movie_data()
+        movie_table = clean_movie_data() #cleans the data
     else:
-        movie_table.load_from_file("input_data/cleaned_movie_data.csv", False)
-    dummy, naive, tree, random_forest = pc.set_up(movie_table)
-    packaged_obj = [dummy, naive, tree, random_forest]
+        movie_table.load_from_file("input_data/cleaned_movie_data.csv", False) #loads the file
+    dummy, naive, tree, random_forest = pc.set_up(movie_table) #sets up the 4 classifiers
+    packaged_obj = [dummy, naive, tree, random_forest] #packed pickle obj
     file = ["dummy.pkl", "naive.pkl", "tree.pkl", "forest.pkl"]
+    file_prefix = "pickled_objects/"
     for obj, file_name in zip(packaged_obj, file):
-        outfile = open(file_name, "wb")
+        outfile = open(file_prefix + file_name, "wb") #opens file
         #print(f"Picked to {file_name}")
-        pickle.dump(obj, outfile)
-        outfile.close()
+        pickle.dump(obj, outfile) #pickles object
+        outfile.close() #close the outfile
 
 if __name__ == "__main__":
     #omdb.get_data() #initally needed this not need now
